@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const adminSchema = new Schema(
   {
@@ -10,4 +10,4 @@ const adminSchema = new Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model('Admin', adminSchema);

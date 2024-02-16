@@ -1,31 +1,36 @@
-const express = require("express");
+const express = require('express');
+
 const app = express();
-const http = require("http");
+const http = require('http');
+
 const server = http.createServer(app);
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: '*',
   },
 });
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
+
 dotenv.config();
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", true);
+const mongoose = require('mongoose');
+
+mongoose.set('strictQuery', true);
 
 mongoose
   .connect(process.env.dbURI)
   .then(() => {
-    console.log("Connected to db");
+    console.log('Connected to db');
   })
   .catch((error) => {
     console.log(error);
   });
-const Chat = require("./models/chatDetails");
+const Chat = require('./models/chatDetails');
 
-io.on("connection", (socket) => {
-  console.log("Connection made");
-  socket.on("join", async (data) => {
+io.on('connection', (socket) => {
+  console.log('Connection made');
+  socket.on('join', async (data) => {
     let room = await Chat.findOne({
       $and: [
         { user1: { $in: [data.sender, data.receiver] } },
@@ -42,16 +47,14 @@ io.on("connection", (socket) => {
     }
     socket.join(room._id.str);
     console.log(`${data.sender} joined ${room._id}`);
-    socket.broadcast
-      .to(room._id.str)
-      .emit("userJoined", {
-        sender: data.sender,
-        receiver: data.receiver,
-        message: "has joined this room.",
-      });
+    socket.broadcast.to(room._id.str).emit('userJoined', {
+      sender: data.sender,
+      receiver: data.receiver,
+      message: 'has joined this room.',
+    });
   });
 
-  socket.on("leave", async (data) => {
+  socket.on('leave', async (data) => {
     const room = await Chat.findOne({
       $and: [
         { user1: { $in: [data.sender, data.receiver] } },
@@ -60,16 +63,14 @@ io.on("connection", (socket) => {
     });
     socket.leave(room._id.str);
     console.log(`${data.sender} left ${room._id}`);
-    socket.broadcast
-      .to(room._id.str)
-      .emit("userLeft", {
-        sender: data.sender,
-        receiver: data.receiver,
-        message: "has left this room.",
-      });
+    socket.broadcast.to(room._id.str).emit('userLeft', {
+      sender: data.sender,
+      receiver: data.receiver,
+      message: 'has left this room.',
+    });
   });
 
-  socket.on("message", async (data) => {
+  socket.on('message', async (data) => {
     const room = await Chat.findOne({
       $and: [
         { user1: { $in: [data.sender, data.receiver] } },
@@ -77,7 +78,7 @@ io.on("connection", (socket) => {
       ],
     });
     console.log(`${data.sender} said ${data.message} in ${room._id}`);
-    io.in(room._id.str).emit("messageReceived", {
+    io.in(room._id.str).emit('messageReceived', {
       sender: data.sender,
       receiver: data.receiver,
       message: data.message,
@@ -93,11 +94,11 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/chat", function (req, res) {
-  res.send("From chat.js");
+app.get('/chat', (req, res) => {
+  res.send('From chat.js');
 });
-app.get("/healthCheck", function (req, res) {
-  res.send({ status: "OK" });
+app.get('/healthCheck', (req, res) => {
+  res.send({ status: 'OK' });
 });
 server.listen(process.env.chatPORT, () => {
   console.log(
