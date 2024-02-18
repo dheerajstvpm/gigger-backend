@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -8,7 +8,7 @@ const userSchema = new Schema(
     username: String,
     password: String,
     mobile: String,
-    profileImage: { type: String, default: 'stockProfileImage.jpg' },
+    profileImage: { type: String, default: "stockProfileImage.jpg" },
     aboutMe: String,
     eventPricing: Number,
     blockStatus: { type: Boolean, default: false },
@@ -20,14 +20,14 @@ const userSchema = new Schema(
     tracks: [
       {
         name: String,
-        albumArt: { type: String, default: 'stockAlbumArt.png' },
+        albumArt: { type: String, default: "stockAlbumArt.png" },
         title: String,
       },
     ],
     videos: [
       {
         name: String,
-        thumbnail: { type: String, default: 'stockThumbnail.jpeg' },
+        thumbnail: { type: String, default: "stockThumbnail.jpeg" },
         title: String,
       },
     ],
@@ -48,4 +48,6 @@ const userSchema = new Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model('User', userSchema);
+const userDetails = mongoose.model("User", userSchema);
+
+export default userDetails;
