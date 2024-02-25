@@ -3,7 +3,6 @@ import cors from "cors";
 import logger from "morgan";
 import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
-import path from "path";
 import mongoose from "mongoose";
 import api from "./routes/api";
 
@@ -26,7 +25,7 @@ mongoose
 
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/", express.static("public"));
 
 app.use(logger("dev"));
 app.use(express.json());
